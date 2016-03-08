@@ -80,23 +80,23 @@ SynthDef.new(\pulsaret2,
 
 x = Synth(\pulsaret2);
 x.free;
-
+Server.default.makeGui;
 (
 Pdef(
 	\pulsar2,
 	Pbind(
 		\instrument, \pulsaret2,
-		\dur, 0.25,
-		\length, 0.01,
-		\period, 0.05,
-		\amp, 0.3,
+		\dur, 0.5,
+		\length, 0.1,
+		\period, 0.02,
+		\amp, 0.0000,
 		//\midinote, Pseq([50, 52], inf),
-		\degree, Pseq([1, 4, 5, 7, 5], inf),
-		\mtranspose, -10,
-		\scale, Scale.harmonicMajor,
+		\degree, Pseq([1, Pxrand([1,2], inf) * Pseq([5,2,3],inf)], inf),
+		\mtranspose, -5,
+		\scale, Scale.harmonicMinor,
 
 	)
-).play;
+).stop;
 )
 
 s.quit;
