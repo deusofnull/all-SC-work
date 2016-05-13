@@ -1,0 +1,59 @@
+(
+~fm = {
+        arg
+        cHz=800, mHz=1, index=0, amp=0.5, a_trig=1,
+        l1=1,l2=1,l3=1,l4=1,l5=1,
+        d1=1, d2=1, d3=1, d4=1,
+        atk=2, dec=0, slev=1, rel=3;
+        var env, modulator, carrier, output, indexenv;
+        env = EnvGen.ar(Env.adsr(atk,dec,slev,rel,0.5,-1), a_trig, doneAction:2);
+        indexenv = EnvGen.ar(Env.new(
+                [l1,l2,l3,l4,l5],
+                [d1,d2,d3,d4],
+                \lin
+        ));
+        index = index * indexenv;
+        modulator = SinOsc.ar(mHz, 0, mHz);
+        carrier = SinOsc.ar(cHz+ (index * modulator));
+        carrier = carrier * env * amp;
+        carrier!2;
+};
+)
+x = ~fm.play; //play initial sound
+
+//higher index creates greater frequency deviation in carrier tone
+x.set(\index, 0); //reset
+x.set(\index, 2);
+x.set(\index, 8);
+x.set(\index, 20);
+
+//modulator frequency determines frequency interval at which sidebands appear;
+x.set(\mHz, 2);
+x.set(\mHz, 5);
+x.set(\mHz, 10);
+x.set(\mHz, 16);
+x.set(\mHz, 40);
+x.set(\mHz, 32); // >20 produces audible spectral sidebands
+x.set(\mHz, 50);
+x.set(\mHz, 93); //inharmonic spectrum
+x.set(\mHz, 400);
+
+//carrier frequency determines point at which sidebands originate
+x.set(\cHz, 900);
+x.set(\cHz, 1800);
+x.set(\cHz, 3200);
+x.set(\cHz, 99); //slightly inharmonic spectrum
+x.set(\cHz, 200);
+
+x.set(\a_trig, 0); //fade out
+
+//////////////////////////////////
+//Chowning's examples
+
+//complex harmonic spectrum, 100Hz fundamental
+x = ~fm.play(args:[\cHz, 100, \mHz, 100, \index, 4]);
+x.set(\index, 24);
+
+
+//complex harmonic spectrum, still 100Hz fundamental
+x = ~fm.play(args:[\cHz, 400, \mHz, 100, \index, 4]);
